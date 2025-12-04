@@ -1,5 +1,3 @@
-import javax.swing.Spring.height
-
 fun main() {
     val roll: Char = '@'
     val empty: Char = '.'
