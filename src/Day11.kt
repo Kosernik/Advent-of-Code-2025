@@ -32,8 +32,22 @@ fun main() {
         return result
     }
 
-    fun part2(input: List<String>): Long {
-        return -1
+    fun part2(graph: Map<String, Device>): Long {
+        val start = "svr"
+        val dac = "dac"
+        val fft = "fft"
+        val finish = "out"
+
+        val startToDac = postorderTraversal(start, dac, graph, mutableMapOf())
+        val startToFft = postorderTraversal(start, fft, graph, mutableMapOf())
+
+        val dacToFft = postorderTraversal(dac, fft, graph, mutableMapOf())
+        val fftToDac = postorderTraversal(fft, dac, graph, mutableMapOf())
+
+        val dacToFinish = postorderTraversal(dac, finish, graph, mutableMapOf())
+        val fftToFinish = postorderTraversal(fft, finish, graph, mutableMapOf())
+
+        return startToDac * dacToFft * fftToFinish + startToFft * fftToDac * dacToFinish
     }
 
     fun buildGraph(input: List<String>): Map<String, Device> {
@@ -76,17 +90,20 @@ fun main() {
     }
 
     // Read a large test input from the `src/Day11_test.txt` file:
-    val testInput = readInput("Day11_test")
-    val testGraph: Map<String, Device> = buildGraph(testInput)
-    println(part1(testGraph) == 5L)
-//    println(part2(testInput) == -1L)
+    val testInput1 = readInput("Day11_test")
+    val testGraph1: Map<String, Device> = buildGraph(testInput1)
+    println(part1(testGraph1) == 5L)
+
+    val testInput2 = readInput("Day11_test2")
+    val testGraph2: Map<String, Device> = buildGraph(testInput2)
+    println(part2(testGraph2) == 2L)
 
     println()
     // Read the input from the `src/Day11.txt` file.
     val input = readInput("Day11")
     val graph = buildGraph(input)
     part1(graph).println()
-//    part2(input).println()
+    part2(graph).println()
 }
 
 class Device(val name: String) {
